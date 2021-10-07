@@ -44,4 +44,29 @@ export class AdminService {
             return 'error'
         }
     }
+
+    async login(body: AdminUserRegisterDTO): Promise<any> {
+        try {
+            let loginedUser = await requester.default.post(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/oauth/token`, {
+                client_id: process.env.AUTH0_ADMINUSER_CLIENT_ID,
+                connection: process.env.AUTH0_ADMINUSER_CONNECTION,
+                scope: process.env.AUTH0_ADMINUSER_SCOPE,
+                grant_type: process.env.AUTH0_ADMINUSER_GRANT_TYPE,
+                username: body.email, 
+                password: body.password
+            })
+
+            delete loginedUser.data['scope']
+            return {
+                message: 'Authorized',
+                ...loginedUser.data
+            }
+
+        } catch (error) {
+            console.log(error.response.data)
+            return 'error'
+        }
+    }
+
+
 }

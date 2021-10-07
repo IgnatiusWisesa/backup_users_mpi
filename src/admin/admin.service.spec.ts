@@ -11,7 +11,7 @@ dotenv.config();
 
 describe('AdminService', () => {
   let service: AdminService;
-  const mock = new MockAdapter.default(requester.default);
+  let mock = new MockAdapter.default(requester.default);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -132,7 +132,49 @@ describe('AdminService', () => {
     expect(await service.register({ email: 'test123@gmail.com', password: "12345678901" })).toMatch('error')
   })
 
-  
+  // login
+  it(`should login a user`, async () => {
+    const body = {
+      email: 'test123@gmail.com', 
+      password: "Pass12345"
+    }
+
+    const expectedResponse = {
+      access_token: expect.any(String),
+      id_token: expect.any(String),
+      expires_in: expect.any(Number),
+      token_type: expect('Bearer'),
+      scope: expect.any(String)
+    }
+
+    mock.onPost(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/oauth/token`, {
+      client_id: process.env.AUTH0_ADMINUSER_CLIENT_ID,
+      connection: process.env.AUTH0_ADMINUSER_CONNECTION,
+      scope: process.env.AUTH0_ADMINUSER_SCOPE,
+      grant_type: process.env.AUTH0_ADMINUSER_GRANT_TYPE,
+      username: body.email, 
+      password: body.password
+    }).reply(200, expectedResponse)
+
+    await service.login(body)
+
+  })
+
+  it(`should not login a user if password not contain uppercase`, async () => {
+    expect(await service.login({ email: 'test123@gmail.com', password: "pass12345" })).toMatch('error')
+  })
+
+  it(`should not login a user if password not contain lowercase`, async () => {
+    expect(await service.login({ email: 'test123@gmail.com', password: "PASS12345" })).toMatch('error')
+  })
+
+  it(`should not login a user if password not contain number`, async () => {
+    expect(await service.login({ email: 'test123@gmail.com', password: "PASSWordThisIs" })).toMatch('error')
+  })
+
+  it(`should not login a user if password not contain alphabet`, async () => {
+    expect(await service.login({ email: 'test123@gmail.com', password: "12345678901" })).toMatch('error')
+  })
 
 
 });
