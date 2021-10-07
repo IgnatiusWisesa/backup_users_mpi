@@ -68,5 +68,17 @@ export class AdminService {
         }
     }
 
+    async checkAccess(headers: object): Promise<any> {
+        try {
+            let token = headers["token"]
+            const options = { headers: { Authorization: `Bearer ${token}` } }
+            await requester.default.post(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/userinfo`, null, options)
 
+            /* istanbul ignore next */      // ignored for automatic give access to user
+            return { message: 'Authorized' }
+        } catch (error) {
+            console.log(error)
+            return 'error'
+        }
+    }
 }

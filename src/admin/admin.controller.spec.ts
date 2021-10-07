@@ -13,7 +13,7 @@ describe('AdminController', () => {
       controllers: [AdminController],
       providers: [AdminService,{
         provide: getModelToken(AdminUser.name),
-        useValue: {}        // will be mocked for common CRUD
+        useValue: {}        // will be filled with mocks for common CRUD
       }, 
     ]
     }).compile();      

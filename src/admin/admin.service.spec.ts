@@ -176,5 +176,29 @@ describe('AdminService', () => {
     expect(await service.login({ email: 'test123@gmail.com', password: "12345678901" })).toMatch('error')
   })
 
+  // check-access
+  it(`should not give access to a user if username or password wrong`, async () => {
+    // expect(await service.checkAccess({ email: 'test123@gmail.com', password: "PASSWordThisIs" })).toMatch('error')
+    expect(await service.checkAccess({ headers: { token: '1234' }})).toMatch('error')
+  })
+
+  it(`should give access to a user`, async () => {
+    let headers = { token: '12345' }
+    let token = headers['token']
+    let options = { Authorization: `Bearer 12345` }
+    let expectedResponse = { message: 'Authorized' }
+    mock.onPost(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/userinfo`, null, { headers: `${options}` }).reply(200, expectedResponse)
+
+    await service.checkAccess(headers)
+
+    mock.onPost(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/userinfo`).reply((config) => {
+      expect(config.headers.Authorization).toEqual(`Bearer ${token}`);
+      return [200, expectedResponse, {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/x-www-form-urlencoded",
+        message: 'Authorized'
+      }];
+    });
+  })
 
 });
