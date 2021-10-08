@@ -9,19 +9,17 @@ export class LoginAuthenticationGuard implements CanActivate {
   /* istanbul ignore next */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.getArgByIndex(0)
-    const res = context.getArgByIndex(1)
+    // const res = context.getArgByIndex(1)
 
-    /* istanbul ignore next */
     const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : ""
 
-    const options = { headers: { Authorization: `Bearer ${token}` } }
     const checkAccess = async ( options ) => {
       await axios.default.post(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/userinfo`, null, options)
     }
 
     /* istanbul ignore next */
     try {
-      await checkAccess(options)
+      await checkAccess({ headers: { Authorization: `Bearer ${token}` } })
       return true
     } catch (error) {
       throw new UnauthorizedException('Login Required')

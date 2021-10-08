@@ -1,4 +1,3 @@
-import { UnauthorizedException } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from './admin.controller';
@@ -43,7 +42,7 @@ describe('AdminController', () => {
     }
   })
 
-  it(`should not register a user if all password lowercase (Controller)`, async () => {
+  it(`should not register a user if all password lowercase (Controller)`, async function(){
     try {
       await controller.register(FalseRegisterPayloadUppercasePass)
     } catch (error) {

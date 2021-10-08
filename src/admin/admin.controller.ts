@@ -52,7 +52,6 @@ export class AdminController {
     @ApiUnauthorizedResponse({ description: 'Unauthorized' })
     @Post('change-password')
     async change_password(@Body() email: UserEmailDTO ): Promise<any> {
-        const changedPasswordResponse = await this.adminUserService.changePassword(email)
-        return changedPasswordResponse
+        return this.adminUserService.changePassword(email)
     }
 }
