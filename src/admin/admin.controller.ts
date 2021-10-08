@@ -1,7 +1,8 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException, Headers } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { AdminUserRegisterDTO } from './dto/admin-user-register.dto';
+import { UserEmailDTO } from './dto/user-email.dto';
 import { AdminUser } from './schema/admin.schema';
 
 @Controller('admin')
@@ -32,4 +33,24 @@ export class AdminController {
         throw new UnauthorizedException()
     }
 
+    @ApiOkResponse({ description: 'checked user access' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+    @Post('user-access')
+    async user_access(@Headers() headers: object ): Promise<any> {
+        const checkedAccessUserResponse = await this.adminUserService.checkAccess(headers)
+
+         /* istanbul ignore next */      // ignored for automatic login user
+        if(checkedAccessUserResponse !== 'error') return checkedAccessUserResponse
+        throw new UnauthorizedException()
+    }
+
+    @ApiOkResponse({ description: 'checked user access' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+    @Post('change-password')
+    async change_password(@Body() email: UserEmailDTO ): Promise<any> {
+        const changedPasswordResponse = await this.adminUserService.changePassword(email)
+        return changedPasswordResponse
+    }
 }

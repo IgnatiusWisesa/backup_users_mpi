@@ -178,7 +178,6 @@ describe('AdminService', () => {
 
   // check-access
   it(`should not give access to a user if username or password wrong`, async () => {
-    // expect(await service.checkAccess({ email: 'test123@gmail.com', password: "PASSWordThisIs" })).toMatch('error')
     expect(await service.checkAccess({ headers: { token: '1234' }})).toMatch('error')
   })
 
@@ -199,6 +198,26 @@ describe('AdminService', () => {
         message: 'Authorized'
       }];
     });
+  })
+
+  // check-change password
+  it(`should send change password link when requested`, async () => {
+
+    const email = {
+      email: 'test1234@gmail.com'
+    }
+
+    const expectedResponse = { message: 'Link for password change sent to email' }
+
+    mock.onPost(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/dbconnections/change_password`, {
+      client_id: process.env.AUTH0_ADMINUSER_CLIENT_ID,
+      connection: process.env.AUTH0_ADMINUSER_CONNECTION,
+      email: email['email'],
+  }).reply(200, expectedResponse)
+
+    await service.changePassword(email).then((res) => console.log(res))
+
+
   })
 
 });

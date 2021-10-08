@@ -71,5 +71,36 @@ describe('AdminController', () => {
     }
   })
 
+  // check-access
+  it(`should not give a user access if token undefined (Controller)`, async () => {
+    try {
+      await controller.user_access({
+        token: null
+      })
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  it(`should not give a user access if token false (Controller)`, async () => {
+    try {
+      await controller.user_access({
+        token: "false_token"
+      })
+    } catch (error) {
+      expect(error).toBeDefined()
+    }
+  })
+
+  // change password
+  it(`should send link to change password (Controller)`, async () => {
+    try {
+      await controller.change_password({
+        email: "test1234@gmail.com"
+      })
+    } catch (error) {
+      expect(error).toBeUndefined()
+    }
+  })
 
 });

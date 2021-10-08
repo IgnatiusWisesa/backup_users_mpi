@@ -6,6 +6,7 @@ import { AdminUser, AdminUserDocument } from './schema/admin.schema';
 import * as requester from 'axios';
 import * as dotenv from 'dotenv';
 import { AdminUserCreateDTO } from './dto/admin-user-create.dto';
+import { UserEmailDTO } from './dto/user-email.dto';
 
 dotenv.config();
 
@@ -81,4 +82,16 @@ export class AdminService {
             return 'error'
         }
     }
+
+    async changePassword(email: UserEmailDTO): Promise<any> {
+
+        const payload = {
+            client_id: process.env.AUTH0_ADMINUSER_CLIENT_ID,
+            connection: process.env.AUTH0_ADMINUSER_CONNECTION,
+            email: email['email'],
+        }
+        await requester.default.post(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/dbconnections/change_password`, payload)
+        return { message: 'Link for password change sent to email' }
+    }
+    
 }
