@@ -3,6 +3,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
+import { EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadUppercasePass } from './mocks/admin-payload.mock';
 import { AdminUser } from './schema/admin.schema';
 
 describe('AdminController', () => {
@@ -28,10 +29,7 @@ describe('AdminController', () => {
   // register
   it(`should not register a user if all password number (Controller)`, async () => {
     try {
-      await controller.register({
-        email: "test123@gmail.com",
-        password: "123456"
-      })
+      await controller.register(FalseRegisterPayloadOnlyNumberPass)
     } catch (error) {
       expect(error).toBeDefined()
     }
@@ -39,10 +37,7 @@ describe('AdminController', () => {
 
   it(`should not register a user if all password uppercase (Controller)`, async () => {
     try {
-      await controller.register({
-        email: "test123@gmail.com",
-        password: "AJSNKAJC"
-      })
+      await controller.register(FalseRegisterPayloadUppercasePass)
     } catch (error) {
       expect(error).toBeDefined()
     }
@@ -50,10 +45,7 @@ describe('AdminController', () => {
 
   it(`should not register a user if all password lowercase (Controller)`, async () => {
     try {
-      await controller.register({
-        email: "test123@gmail.com",
-        password: "ascadawd"
-      })
+      await controller.register(FalseRegisterPayloadUppercasePass)
     } catch (error) {
       expect(error).toBeDefined()
     }
@@ -62,10 +54,7 @@ describe('AdminController', () => {
   // login
   it(`should not login a user if email not in the system (Controller)`, async () => {
     try {
-      await controller.login({
-        email: "test1234@gmail.com",
-        password: "123456"
-      })
+      await controller.login(FalseRegisterPayloadOnlyNumberPass)
     } catch (error) {
       expect(error).toBeDefined()
     }
@@ -95,9 +84,7 @@ describe('AdminController', () => {
   // change password
   it(`should send link to change password (Controller)`, async () => {
     try {
-      await controller.change_password({
-        email: "test1234@gmail.com"
-      })
+      await controller.change_password(EmailPayload)
     } catch (error) {
       expect(error).toBeUndefined()
     }

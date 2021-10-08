@@ -6,6 +6,7 @@ import { AdminUser } from './schema/admin.schema';
 import * as requester from 'axios';
 import * as MockAdapter from 'axios-mock-adapter';
 import * as dotenv from 'dotenv';
+import { EmailPayload, FalseRegisterPayloadLowercasePass, FalseRegisterPayloadNoNumberPass, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadUppercasePass, RegisterCreatePayload, RegisterCreatePayloadSuccess, TrueRegisterPayload } from './mocks/admin-payload.mock';
 
 dotenv.config();
 
@@ -36,22 +37,12 @@ describe('AdminService', () => {
 
   // crud
   it(`should create a user after register success`, async () => {
-    expect(await service.registerCreate({
-      auth_id: "1234",
-      email: "test1234@gmail.com"
-    })).toEqual({
-      id: "id",
-      auth_id: "1234",
-      email: "test1234@gmail.com"
-    })
+    expect(await service.registerCreate(RegisterCreatePayload)).toEqual(RegisterCreatePayloadSuccess)
   })
 
   // register
   it(`should register a user & save to the database successfully`, async () => {
-    const body = {
-      email: 'test123@gmail.com', 
-      password: "Pass12345"
-    }
+    const body = TrueRegisterPayload
 
     const expectedResponse = {
       _id: expect.any(String),
@@ -83,10 +74,7 @@ describe('AdminService', () => {
   })
 
   it(`should register a user but save to the database as empty because auth0 error`, async () => {
-    const body = {
-      email: 'test123@gmail.com', 
-      password: "Pass12345"
-    }
+    const body = TrueRegisterPayload
 
     const expectedResponse = {
       _id: null,
@@ -117,27 +105,24 @@ describe('AdminService', () => {
   })
   
   it(`should not register a user if password not contain uppercase`, async () => {
-    expect(await service.register({ email: 'test123@gmail.com', password: "pass12345" })).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadLowercasePass)).toMatch('error')
   })
 
   it(`should not register a user if password not contain lowercase`, async () => {
-    expect(await service.register({ email: 'test123@gmail.com', password: "PASS12345" })).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadUppercasePass)).toMatch('error')
   })
 
   it(`should not register a user if password not contain number`, async () => {
-    expect(await service.register({ email: 'test123@gmail.com', password: "PASSWordThisIs" })).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadNoNumberPass)).toMatch('error')
   })
 
   it(`should not register a user if password not contain alphabet`, async () => {
-    expect(await service.register({ email: 'test123@gmail.com', password: "12345678901" })).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadOnlyNumberPass)).toMatch('error')
   })
 
   // login
   it(`should login a user`, async () => {
-    const body = {
-      email: 'test123@gmail.com', 
-      password: "Pass12345"
-    }
+    const body = TrueRegisterPayload
 
     const expectedResponse = {
       access_token: expect.any(String),
@@ -161,19 +146,19 @@ describe('AdminService', () => {
   })
 
   it(`should not login a user if password not contain uppercase`, async () => {
-    expect(await service.login({ email: 'test123@gmail.com', password: "pass12345" })).toMatch('error')
+    expect(await service.login(FalseRegisterPayloadLowercasePass)).toMatch('error')
   })
 
   it(`should not login a user if password not contain lowercase`, async () => {
-    expect(await service.login({ email: 'test123@gmail.com', password: "PASS12345" })).toMatch('error')
+    expect(await service.login(FalseRegisterPayloadUppercasePass)).toMatch('error')
   })
 
   it(`should not login a user if password not contain number`, async () => {
-    expect(await service.login({ email: 'test123@gmail.com', password: "PASSWordThisIs" })).toMatch('error')
+    expect(await service.login(FalseRegisterPayloadNoNumberPass)).toMatch('error')
   })
 
   it(`should not login a user if password not contain alphabet`, async () => {
-    expect(await service.login({ email: 'test123@gmail.com', password: "12345678901" })).toMatch('error')
+    expect(await service.login(FalseRegisterPayloadOnlyNumberPass)).toMatch('error')
   })
 
   // check-access
@@ -202,13 +187,8 @@ describe('AdminService', () => {
 
   // check-change password
   it(`should send change password link when requested`, async () => {
-
-    const email = {
-      email: 'test1234@gmail.com'
-    }
-
+    const email = EmailPayload
     const expectedResponse = { message: 'Link for password change sent to email' }
-
     mock.onPost(`https://${process.env.AUTH0_ADMINUSER_BASE_URL}/dbconnections/change_password`, {
       client_id: process.env.AUTH0_ADMINUSER_CLIENT_ID,
       connection: process.env.AUTH0_ADMINUSER_CONNECTION,
@@ -216,8 +196,6 @@ describe('AdminService', () => {
   }).reply(200, expectedResponse)
 
     await service.changePassword(email).then((res) => console.log(res))
-
-
   })
 
 });
