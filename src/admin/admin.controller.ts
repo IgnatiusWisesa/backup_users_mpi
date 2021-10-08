@@ -1,5 +1,6 @@
-import { Body, Controller, Post, UnauthorizedException, Headers } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { LoginAuthenticationGuard } from '../authz/authz.guard';
 import { AdminService } from './admin.service';
 import { AdminUserRegisterDTO } from './dto/admin-user-register.dto';
 import { UserEmailDTO } from './dto/user-email.dto';
@@ -45,6 +46,7 @@ export class AdminController {
         throw new UnauthorizedException()
     }
 
+    @UseGuards(LoginAuthenticationGuard)
     @ApiOkResponse({ description: 'checked user access' })
     @ApiBadRequestResponse({ description: 'False Request Payload' })
     @ApiUnauthorizedResponse({ description: 'Unauthorized' })

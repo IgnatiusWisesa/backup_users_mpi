@@ -41,7 +41,7 @@ export class AdminService {
             return registeredUser.data
 
         } catch (error) {
-            console.log(error.response.data)
+            // console.log(error.response.data)
             return 'error'
         }
     }
@@ -64,7 +64,7 @@ export class AdminService {
             }
 
         } catch (error) {
-            console.log(error.response.data)
+            // console.log(error.response.data)
             return 'error'
         }
     }
@@ -78,7 +78,7 @@ export class AdminService {
             /* istanbul ignore next */      // ignored for automatic give access to user
             return { message: 'Authorized' }
         } catch (error) {
-            console.log(error)
+            // console.log(error.response.data)
             return 'error'
         }
     }

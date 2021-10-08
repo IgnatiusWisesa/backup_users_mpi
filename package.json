@@ -76,6 +76,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "verbose": true,
+    "coveragePathIgnorePatterns": [
+      "authz.module.ts",
+      "app.module.ts",
+      "main.ts",
+      "admin.module.ts",
+      "admin-user-create.dto.ts"
+    ]
   }
 }
