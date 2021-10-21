@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsMongoId, IsOptional } from "class-validator"
+import { IsIn, IsMongoId, IsOptional } from "class-validator"
 
 export class AdminUserCreateDTO {
 
@@ -14,4 +14,11 @@ export class AdminUserCreateDTO {
     @ApiProperty()
     email: string
 
+    @ApiProperty()
+    @IsIn(['BUYER', 'VENDOR'])
+    flag: string
+
+    @ApiProperty()
+    @IsIn(['ACTIVE', 'INACTIVE'])
+    status: string
 }

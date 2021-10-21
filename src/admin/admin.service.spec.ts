@@ -59,49 +59,7 @@ describe('AdminService', () => {
       'Content-Type': process.env.application_json,
       'Accept': process.env.application_json,
   }).reply(200, expectedResponse)
-
     service.register(body).then((res) => console.log(res))
-    
-    expect(await service.registerCreate({
-      auth_id: expectedResponse._id,
-      email: expectedResponse.email
-    })).toEqual({
-      id: expect.any(String),
-      auth_id: expectedResponse._id,
-      email: expectedResponse.email
-    })
-
-  })
-
-  it(`should register a user but save to the database as empty because auth0 error`, async () => {
-    const body = TrueRegisterPayload
-
-    const expectedResponse = {
-      _id: null,
-      email_verified: false,
-      email: null
-  }
-
-    mock.onPost(`https://dev-4fme9j23.us.auth0.com/dbconnections/signup`, {
-      client_id: process.env.AUTH0_ADMINUSER_CLIENT_ID,
-      connection: process.env.AUTH0_ADMINUSER_CONNECTION,
-      email: body.email, 
-      password: body.password
-    }, {
-      'Content-Type': process.env.application_json,
-      'Accept': process.env.application_json,
-  }).reply(200, expectedResponse)
-
-    service.register(body)
-    
-    expect(await service.registerCreate({
-      auth_id: expectedResponse._id,
-      email: expectedResponse.email
-    })).toEqual({
-      id: expect.any(String),
-      auth_id: expectedResponse._id,
-      email: expectedResponse.email
-    })
   })
   
   it(`should not register a user if password not contain uppercase`, async () => {

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsIn } from "class-validator";
 import { Document } from "mongoose";
 
 export type AdminUserDocument = AdminUser & Document;
@@ -14,6 +15,16 @@ export class AdminUser {
     @ApiProperty()
     @Prop()
     email: string
+
+    @ApiProperty()
+    @Prop()
+    @IsIn(['BUYER', 'VENDOR'])
+    flag: string
+
+    @ApiProperty()
+    @Prop()
+    @IsIn(['ACTIVE', 'INACTIVE'])
+    status: string
 }
 
 export const AdminUserSchema = SchemaFactory.createForClass(AdminUser)

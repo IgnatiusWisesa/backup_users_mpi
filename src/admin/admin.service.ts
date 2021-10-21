@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AdminUserRegisterDTO } from './dto/admin-user-register.dto';
@@ -15,7 +15,7 @@ export class AdminService {
 
     constructor( @InjectModel(AdminUser.name) private readonly adminUserModel:Model<AdminUserDocument> ) {}
 
-    async registerCreate( user: AdminUserCreateDTO ): Promise<AdminUser> {
+    async registerCreate( user: AdminUserCreateDTO ): Promise<any> {
         return this.adminUserModel.create(user)
     }
 
@@ -33,11 +33,6 @@ export class AdminService {
                 password: body.password
             }, { headers: headersRequest })
 
-            await this.registerCreate({
-                auth_id: registeredUser.data['_id'] ? registeredUser.data['_id'] : "",
-                email: registeredUser.data['email'] ? registeredUser.data['email'] : ""
-            })
-            
             return registeredUser.data
 
         } catch (error) {
