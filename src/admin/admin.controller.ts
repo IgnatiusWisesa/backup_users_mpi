@@ -1,10 +1,9 @@
 import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards, Put, Param } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { LoginAuthenticationGuard, LoginSuperUserAuthenticationGuard } from '../authz/authz.guard';
+import { LoginSuperUserAuthenticationGuard } from '../authz/authz.guard';
 import { AdminService } from './admin.service';
 import { AdminUserCreateDTO } from './dto/admin-user-create.dto';
 import { AdminUserRegisterDTO } from './dto/admin-user-register.dto';
-import { AuthIdDTO } from './dto/auth_id.dto';
 import { UpdateAdminDTO } from './dto/update-admin.dto';
 import { UserEmailDTO } from './dto/user-email.dto';
 import { AdminUser } from './schema/admin.schema';

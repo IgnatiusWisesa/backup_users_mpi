@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { AdminControllerMock } from './mocks/admin-controller.mock';
-import { EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadOnlyNumberPassNoFlag, FalseRegisterPayloadUppercasePass, FalseRegisterPayloadUppercasePassNoFlag, GetProfileByAuthId, MockAuthId, RegisterCreatePayloadWithoutAuthId, StringMockId } from './mocks/admin-payload.mock';
+import { EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadOnlyNumberPassNoFlag, FalseRegisterPayloadUppercasePass, FalseRegisterPayloadUppercasePassNoFlag, GetProfileByAuthId, RegisterCreatePayloadWithoutAuthId, StringMockId } from './mocks/admin-payload.mock';
 import { AdminUser } from './schema/admin.schema';
 
 describe('AdminController', () => {
@@ -51,7 +51,8 @@ describe('AdminController', () => {
 
   it(`should not register a superuser if all password lowercase (Controller)`, async function(){
     try {
-      await controller.registerSuperuser(FalseRegisterPayloadUppercasePassNoFlag)
+      var test = await controller.registerSuperuser(FalseRegisterPayloadUppercasePassNoFlag)
+      console.log(test)
     } catch (error) {
       expect(error).toBeDefined()
     }
@@ -76,7 +77,8 @@ describe('AdminController', () => {
 
   it(`should not register a user if all password lowercase (Controller)`, async function(){
     try {
-      await controller.register(FalseRegisterPayloadUppercasePass)
+      var test = await controller.register(FalseRegisterPayloadUppercasePass)
+      console.log(test)
     } catch (error) {
       expect(error).toBeDefined()
     }

@@ -10,8 +10,6 @@ export class LoginAuthenticationGuard implements CanActivate {
   /* istanbul ignore next */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.getArgByIndex(0)
-    // const res = context.getArgByIndex(1)
-
     const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : ""
 
     const checkAccess = async ( options ) => {
@@ -36,8 +34,6 @@ export class LoginSuperUserAuthenticationGuard implements CanActivate {
   /* istanbul ignore next */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.getArgByIndex(0)
-    // const res = context.getArgByIndex(1)
-
     const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : ""
     let auth_id = ""
 
