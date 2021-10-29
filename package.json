@@ -34,6 +34,7 @@
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
     "mongoose": "^6.0.9",
+    "morgan": "^1.10.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -84,7 +85,8 @@
       "app.module.ts",
       "main.ts",
       "admin.module.ts",
-      "admin-user-create.dto.ts"
+      "admin-user-create.dto.ts",
+      "auth_id.dto.ts"
     ]
   }
 }

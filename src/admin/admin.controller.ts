@@ -1,9 +1,11 @@
-import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { LoginAuthenticationGuard } from '../authz/authz.guard';
+import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards, Put, Param } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { LoginAuthenticationGuard, LoginSuperUserAuthenticationGuard } from '../authz/authz.guard';
 import { AdminService } from './admin.service';
 import { AdminUserCreateDTO } from './dto/admin-user-create.dto';
 import { AdminUserRegisterDTO } from './dto/admin-user-register.dto';
+import { AuthIdDTO } from './dto/auth_id.dto';
+import { UpdateAdminDTO } from './dto/update-admin.dto';
 import { UserEmailDTO } from './dto/user-email.dto';
 import { AdminUser } from './schema/admin.schema';
 
@@ -12,6 +14,7 @@ export class AdminController {
 
     constructor( private readonly adminUserService:AdminService ){}
 
+    @UseGuards(LoginSuperUserAuthenticationGuard)
     @ApiCreatedResponse({ type: AdminUser, description: 'register an admin-user' })
     @ApiBadRequestResponse({ description: 'False Request Payload' })
     @Post('register')
@@ -21,10 +24,34 @@ export class AdminController {
         /* istanbul ignore next */      // ignored for automatic registering user
         if( registeredUser !== 'error' ) {
             let userPayload: AdminUserCreateDTO = {
+                name: body['name'] ? body['name'] : "",
                 auth_id: registeredUser['_id'] ? registeredUser['_id'] : "",
                 email: registeredUser['email'] ? registeredUser['email'] : "",
                 flag: ['BUYER', 'VENDOR'].includes(body['flag']) ? body['flag'] : "",
                 status: 'ACTIVE',
+                role: 'SUPERADMIN'
+            }
+
+            if( userPayload.flag !== "" ) return this.adminUserService.registerCreate(userPayload)
+        }
+        throw new UnauthorizedException()
+    }
+
+    @ApiCreatedResponse({ type: AdminUser, description: 'register an admin superuser' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @Post('register-superuser')
+    async registerSuperuser(@Body() body: any): Promise<AdminUserCreateDTO> {
+        const registeredUser = await this.adminUserService.register(body)
+
+        /* istanbul ignore next */      // ignored for automatic registering user
+        if( registeredUser !== 'error' ) {
+            let userPayload: AdminUserCreateDTO = {
+                name: body['name'] ? body['name'] : "",
+                auth_id: registeredUser['_id'] ? registeredUser['_id'] : "",
+                email: registeredUser['email'] ? registeredUser['email'] : "",
+                flag: 'SUPERUSER',
+                status: 'ACTIVE',
+                role: 'SUPERUSER'
             }
 
             if( userPayload.flag !== "" ) return this.adminUserService.registerCreate(userPayload)
@@ -40,8 +67,17 @@ export class AdminController {
         const loginedUser = await this.adminUserService.login(body)
 
         /* istanbul ignore next */      // ignored for automatic login user
-        if(loginedUser !== 'error') return loginedUser
-        throw new UnauthorizedException()
+        if(loginedUser.status !== 'error') return loginedUser
+        throw new UnauthorizedException(loginedUser.message)
+    }
+
+    @UseGuards(LoginSuperUserAuthenticationGuard)
+    @ApiCreatedResponse({ type: AdminUser, description: 'update a superadmin' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @ApiParam({ name: 'auth_id', required: true })
+    @Put('update-superuser/:auth_id')
+    async update_superuser(@Param('auth_id') auth_id: string, @Body() body: UpdateAdminDTO): Promise<AdminUserCreateDTO> {
+        return this.adminUserService.update({auth_id}, body)
     }
 
     @ApiOkResponse({ description: 'checked user access' })
@@ -49,14 +85,18 @@ export class AdminController {
     @ApiUnauthorizedResponse({ description: 'Unauthorized' })
     @Post('user-access')
     async user_access(@Headers() headers: object ): Promise<any> {
-        const checkedAccessUserResponse = await this.adminUserService.checkAccess(headers)
+        let checkedAccessUserResponse = await this.adminUserService.checkAccess(headers)
+        let profile_user = await this.adminUserService.getProfile(checkedAccessUserResponse.auth_id)
 
          /* istanbul ignore next */      // ignored for automatic login user
-        if(checkedAccessUserResponse !== 'error') return checkedAccessUserResponse
+        if(checkedAccessUserResponse !== 'error') return {
+            ...checkedAccessUserResponse,
+            profile_user
+        }
         throw new UnauthorizedException()
     }
 
-    @UseGuards(LoginAuthenticationGuard)
+    // @UseGuards(LoginAuthenticationGuard)
     @ApiOkResponse({ description: 'checked user access' })
     @ApiBadRequestResponse({ description: 'False Request Payload' })
     @ApiUnauthorizedResponse({ description: 'Unauthorized' })

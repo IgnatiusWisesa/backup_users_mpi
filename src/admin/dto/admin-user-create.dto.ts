@@ -15,10 +15,17 @@ export class AdminUserCreateDTO {
     email: string
 
     @ApiProperty()
-    @IsIn(['BUYER', 'VENDOR'])
+    @IsIn(['BUYER', 'VENDOR', 'SUPERUSER'])
     flag: string
 
     @ApiProperty()
     @IsIn(['ACTIVE', 'INACTIVE'])
     status: string
+
+    @ApiProperty()
+    @IsIn(['SUPERADMIN', 'SUPERUSER'])
+    role: string
+
+    @ApiProperty()
+    name: string
 }

@@ -14,12 +14,21 @@ export class AdminUser {
 
     @ApiProperty()
     @Prop()
+    name: string
+
+    @ApiProperty()
+    @Prop()
     email: string
 
     @ApiProperty()
     @Prop()
-    @IsIn(['BUYER', 'VENDOR'])
+    @IsIn(['BUYER', 'VENDOR', 'SUPERUSER'])
     flag: string
+
+    @ApiProperty()
+    @Prop()
+    @IsIn(['SUPERADMIN', 'SUPERUSER'])
+    role: string
 
     @ApiProperty()
     @Prop()

@@ -5,9 +5,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 dotenv.config();
+import * as morgan from 'morgan';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(morgan('tiny'));
+
+  app.enableCors()
 
   // set pipes
   app.useGlobalPipes(new ValidationPipe())
