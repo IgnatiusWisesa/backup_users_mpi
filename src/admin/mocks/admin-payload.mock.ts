@@ -20,7 +20,9 @@ export const RegisterCreatePayload = {
     flag: 'BUYER',
     status: 'ACTIVE',
     role: 'SUPERADMIN',
-    name: 'Testt'
+    name: 'Testt',
+    active_buyer_company_id: expect.anything(),
+    active_vendor_company_id: expect.anything()
 }
 
 export const RegisterCreatePayloadWithoutAuthId = {
@@ -28,7 +30,13 @@ export const RegisterCreatePayloadWithoutAuthId = {
     flag: 'BUYER',
     status: 'ACTIVE',
     role: 'SUPERADMIN',
-    name: 'Testt'
+    name: 'Testt',
+    active_buyer_company_id: expect.anything(),
+    active_vendor_company_id: expect.anything()
+}
+
+export const ActivateSuperadminPayload = {
+    active_buyer_company_id: 'Buyer001'
 }
 
 export const GetProfileByAuthId = (auth_id) => {
@@ -39,7 +47,9 @@ export const GetProfileByAuthId = (auth_id) => {
         id: "1234", 
         status: "ACTIVE",
         role: 'SUPERADMIN',
-        name: 'Testt'
+        name: 'Testt',
+        active_buyer_company_id: expect.anything(),
+        active_vendor_company_id: expect.anything()
     }
 }
 
@@ -50,8 +60,35 @@ export const RegisterCreatePayloadSuccess = {
     flag: 'BUYER',
     status: 'ACTIVE',
     role: 'SUPERADMIN',
-    name: 'Testt'
+    name: 'Testt',
+    active_buyer_company_id: expect.anything(),
+    active_vendor_company_id: expect.anything()
 }
+
+export const ArrayOfObjectAdmins = [
+    {
+        id: "id1",
+        auth_id: "1234",
+        email: "test1234@gmail.com",
+        flag: 'BUYER',
+        status: 'ACTIVE',
+        role: 'SUPERADMIN',
+        name: 'Testt',
+        active_buyer_company_id: expect.anything(),
+        active_vendor_company_id: expect.anything()
+    },
+    {
+        id: "id2",
+        auth_id: "1234",
+        email: "test1234@gmail.com",
+        flag: 'BUYER',
+        status: 'ACTIVE',
+        role: 'SUPERADMIN',
+        name: 'Testt',
+        active_buyer_company_id: expect.anything(),
+        active_vendor_company_id: expect.anything()
+    },
+]
 
 export const TrueRegisterPayload = { email: 'test123@gmail.com', password: process.env.MOCK_PASSWORD, flag: 'BUYER', role: 'SUPERADMIN', name: 'Testt' }
 export const FalseRegisterPayloadLowercasePass = { email: 'test123@gmail.com', password: process.env.MOCK_PASSWORD_LOWERCASE, flag: 'BUYER', role: 'SUPERADMIN', name: 'Testt' }

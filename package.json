@@ -86,7 +86,8 @@
       "main.ts",
       "admin.module.ts",
       "admin-user-create.dto.ts",
-      "auth_id.dto.ts"
+      "auth_id.dto.ts",
+      "update_activate_admin.dto.ts"
     ]
   }
 }

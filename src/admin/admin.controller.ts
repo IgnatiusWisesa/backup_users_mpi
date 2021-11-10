@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards, Put, Param } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards, Put, Param, Get } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { LoginSuperUserAuthenticationGuard } from '../authz/authz.guard';
 import { AdminService } from './admin.service';
@@ -16,12 +16,20 @@ export class AdminController {
     @UseGuards(LoginSuperUserAuthenticationGuard)
     @ApiCreatedResponse({ type: AdminUser, description: 'register an admin-user' })
     @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @Get('all-admin')
+    async findAll(): Promise<any> {
+        return this.adminUserService.getAll()
+    }
+
+    @UseGuards(LoginSuperUserAuthenticationGuard)
+    @ApiCreatedResponse({ type: AdminUser, description: 'register an admin-user' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
     @Post('register')
     async register(@Body() body: AdminUserRegisterDTO): Promise<AdminUserCreateDTO> {
         const registeredUser = await this.adminUserService.register(body)
 
         /* istanbul ignore next */      // ignored for automatic registering user
-        if( registeredUser !== 'error' ) {
+        if( !registeredUser.error ) {
             let userPayload: AdminUserCreateDTO = {
                 name: body['name'] ? body['name'] : "",
                 auth_id: registeredUser['_id'] ? registeredUser['_id'] : "",
@@ -43,7 +51,7 @@ export class AdminController {
         const registeredUser = await this.adminUserService.register(body)
 
         /* istanbul ignore next */      // ignored for automatic registering user
-        if( registeredUser !== 'error' ) {
+        if( !registeredUser.error ) {
             let userPayload: AdminUserCreateDTO = {
                 name: body['name'] ? body['name'] : "",
                 auth_id: registeredUser['_id'] ? registeredUser['_id'] : "",
@@ -77,6 +85,17 @@ export class AdminController {
     @Put('update-superuser/:auth_id')
     async update_superuser(@Param('auth_id') auth_id: string, @Body() body: UpdateAdminDTO): Promise<AdminUserCreateDTO> {
         return this.adminUserService.update({auth_id}, body)
+    }
+
+    @ApiCreatedResponse({ type: AdminUser, description: 'activate a superadmin with "buyer" flag' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @ApiParam({ name: 'buyer_id', required: true })
+    @Put(':buyer_id/activate/:auth_id')
+    async activate_superadmin_buyer(
+        @Param('buyer_id') buyer_id: string, 
+        @Param('auth_id') auth_id: string,
+    ): Promise<AdminUserCreateDTO> {
+        return this.adminUserService.update_activate({auth_id}, { active_buyer_company_id: buyer_id })
     }
 
     @ApiOkResponse({ description: 'checked user access' })

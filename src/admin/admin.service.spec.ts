@@ -6,7 +6,7 @@ import { AdminUser } from './schema/admin.schema';
 import * as requester from 'axios';
 import * as MockAdapter from 'axios-mock-adapter';
 import * as dotenv from 'dotenv';
-import { EmailPayload, FalseRegisterPayloadLowercasePass, FalseRegisterPayloadNoNumberPass, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadUppercasePass, GetProfileByAuthId, MockAuthId, RegisterCreatePayload, RegisterCreatePayloadSuccess, RegisterCreatePayloadWithoutAuthId, StringMockId, TrueRegisterPayload } from './mocks/admin-payload.mock';
+import { ActivateSuperadminPayload, ArrayOfObjectAdmins, EmailPayload, FalseRegisterPayloadLowercasePass, FalseRegisterPayloadNoNumberPass, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadUppercasePass, GetProfileByAuthId, MockAuthId, RegisterCreatePayload, RegisterCreatePayloadSuccess, RegisterCreatePayloadWithoutAuthId, StringMockId, TrueRegisterPayload } from './mocks/admin-payload.mock';
 
 dotenv.config();
 
@@ -48,6 +48,16 @@ describe('AdminService', () => {
     expect(await service.update(MockAuthId, RegisterCreatePayloadWithoutAuthId)).toEqual(GetProfileByAuthId(StringMockId));
   });
 
+  // GetProfileByAuthIdWithActiveBuyerCompanyId(StringMockId, 'Buyer001')
+
+  it('should activate a superadmin', async () => {
+    expect(await service.update_activate(MockAuthId, ActivateSuperadminPayload)).toEqual(GetProfileByAuthId(StringMockId));
+  });
+
+  it('should get list of admins', async () => {
+    expect(await service.getAll()).toEqual(ArrayOfObjectAdmins);
+  });
+
   // register
   it(`should register a user & save to the database successfully`, async () => {
     const body = TrueRegisterPayload
@@ -71,19 +81,19 @@ describe('AdminService', () => {
   })
   
   it(`should not register a user if password not contain uppercase`, async () => {
-    expect(await service.register(FalseRegisterPayloadLowercasePass)).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadLowercasePass)).toEqual({"error": true})
   })
 
   it(`should not register a user if password not contain lowercase`, async () => {
-    expect(await service.register(FalseRegisterPayloadUppercasePass)).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadUppercasePass)).toEqual({"error": true})
   })
 
   it(`should not register a user if password not contain number`, async () => {
-    expect(await service.register(FalseRegisterPayloadNoNumberPass)).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadNoNumberPass)).toEqual({"error": true})
   })
 
   it(`should not register a user if password not contain alphabet`, async () => {
-    expect(await service.register(FalseRegisterPayloadOnlyNumberPass)).toMatch('error')
+    expect(await service.register(FalseRegisterPayloadOnlyNumberPass)).toEqual({"error": true})
   })
 
   // login

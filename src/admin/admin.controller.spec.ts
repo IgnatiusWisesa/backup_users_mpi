@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { AdminControllerMock } from './mocks/admin-controller.mock';
-import { EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadOnlyNumberPassNoFlag, FalseRegisterPayloadUppercasePass, FalseRegisterPayloadUppercasePassNoFlag, GetProfileByAuthId, RegisterCreatePayloadWithoutAuthId, StringMockId } from './mocks/admin-payload.mock';
+import { ActivateSuperadminPayload, ArrayOfObjectAdmins, EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadOnlyNumberPassNoFlag, FalseRegisterPayloadUppercasePass, FalseRegisterPayloadUppercasePassNoFlag, GetProfileByAuthId, RegisterCreatePayloadWithoutAuthId, StringMockId } from './mocks/admin-payload.mock';
 import { AdminUser } from './schema/admin.schema';
 
 describe('AdminController', () => {
@@ -26,9 +26,19 @@ describe('AdminController', () => {
     expect(controller).toBeDefined();
   });
 
+  // get
+  it(`should get a list of admins (Controller)`, async () => {
+    expect(await controller.findAll()).toEqual(ArrayOfObjectAdmins)
+  })
+
   // update
   it(`should update a superadmin (Controller)`, async () => {
     var test = await controller.update_superuser(StringMockId, RegisterCreatePayloadWithoutAuthId)
+    expect(test).toEqual(GetProfileByAuthId(StringMockId))
+  })
+
+  it(`should activate a superadmin (Controller)`, async () => {
+    var test = await controller.activate_superadmin_buyer('Buyer001', StringMockId)
     expect(test).toEqual(GetProfileByAuthId(StringMockId))
   })
 

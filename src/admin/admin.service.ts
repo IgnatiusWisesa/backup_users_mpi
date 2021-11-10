@@ -9,6 +9,7 @@ import { AdminUserCreateDTO } from './dto/admin-user-create.dto';
 import { UserEmailDTO } from './dto/user-email.dto';
 import { UpdateAdminDTO } from './dto/update-admin.dto';
 import { AuthIdDTO } from './dto/auth_id.dto';
+import { UpdateAdminActivateDTO } from './dto/update_activate_admin.dto';
 
 dotenv.config();
 
@@ -17,11 +18,20 @@ export class AdminService {
 
     constructor( @InjectModel(AdminUser.name) private readonly adminUserModel:Model<AdminUserDocument> ) {}
 
+    async getAll(): Promise<any> {
+        return this.adminUserModel.find({})
+    }
+
     async getProfile( auth_id: string ): Promise<any> {
         return this.adminUserModel.findOne({ auth_id })
     }
 
     async update(auth_id: AuthIdDTO, body: UpdateAdminDTO ): Promise<AdminUser> {
+        await this.adminUserModel.updateOne(auth_id, body)
+        return this.getProfile(auth_id.auth_id)
+    }
+
+    async update_activate(auth_id: AuthIdDTO, body: UpdateAdminActivateDTO ): Promise<AdminUser> {
         await this.adminUserModel.updateOne(auth_id, body)
         return this.getProfile(auth_id.auth_id)
     }
@@ -48,7 +58,7 @@ export class AdminService {
 
         } catch (error) {
             // console.log(error.response.data)
-            return 'error'
+            return { error: true, ...error.response.data }
         }
     }
 

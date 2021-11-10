@@ -34,6 +34,14 @@ export class AdminUser {
     @Prop()
     @IsIn(['ACTIVE', 'INACTIVE'])
     status: string
+
+    @ApiProperty()
+    @Prop()
+    active_buyer_company_id: string
+
+    @ApiProperty()
+    @Prop()
+    active_vendor_company_id: string
 }
 
 export const AdminUserSchema = SchemaFactory.createForClass(AdminUser)
