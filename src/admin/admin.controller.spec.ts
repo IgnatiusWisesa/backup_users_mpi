@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { AdminControllerMock } from './mocks/admin-controller.mock';
-import { ActivateSuperadminPayload, ArrayOfObjectAdmins, EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadOnlyNumberPassNoFlag, FalseRegisterPayloadUppercasePass, FalseRegisterPayloadUppercasePassNoFlag, GetProfileByAuthId, RegisterCreatePayloadWithoutAuthId, StringMockId } from './mocks/admin-payload.mock';
+import { ArrayOfObjectAdmins, EmailPayload, FalseRegisterPayloadOnlyNumberPass, FalseRegisterPayloadOnlyNumberPassNoFlag, FalseRegisterPayloadUppercasePass, FalseRegisterPayloadUppercasePassNoFlag, GetProfileByAuthId, RegisterCreatePayloadWithoutAuthId, StringMockId } from './mocks/admin-payload.mock';
 import { AdminUser } from './schema/admin.schema';
 
 describe('AdminController', () => {
