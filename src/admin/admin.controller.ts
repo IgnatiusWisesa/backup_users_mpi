@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards, Put, Param, Get } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException, Headers, UseGuards, Put, Param, Get, Query } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { LoginSuperUserAuthenticationGuard } from '../authz/authz.guard';
 import { AdminService } from './admin.service';
@@ -90,12 +90,27 @@ export class AdminController {
     @ApiCreatedResponse({ type: AdminUser, description: 'activate a superadmin with "buyer" flag' })
     @ApiBadRequestResponse({ description: 'False Request Payload' })
     @ApiParam({ name: 'buyer_id', required: true })
-    @Put(':buyer_id/activate/:auth_id')
-    async activate_superadmin_buyer(
-        @Param('buyer_id') buyer_id: string, 
+    @Put('/activate/:auth_id')
+    async activate_superadmin(
+        @Query() queries: any,
         @Param('auth_id') auth_id: string,
     ): Promise<AdminUserCreateDTO> {
-        return this.adminUserService.update_activate({auth_id}, { active_buyer_company_id: buyer_id })
+
+        let condition = {}
+        if(queries.buyer_id) condition['active_buyer_company_id'] = queries.buyer_id
+        if(queries.vendor_id) condition['active_vendor_company_id'] = queries.vendor_id
+
+        return this.adminUserService.update_activate({auth_id}, condition)
+    }
+
+    @ApiCreatedResponse({ type: AdminUser, description: 'activate a superadmin with "buyer" flag' })
+    @ApiBadRequestResponse({ description: 'False Request Payload' })
+    @ApiParam({ name: 'buyer_id', required: true })
+    @Put('/deactivate/:auth_id')
+    async deactivate_superadmin(
+        @Param('auth_id') auth_id: string,
+    ): Promise<AdminUserCreateDTO> {
+        return this.adminUserService.update_activate({auth_id}, { active_buyer_company_id: null, active_vendor_company_id: null })
     }
 
     @ApiOkResponse({ description: 'checked user access' })

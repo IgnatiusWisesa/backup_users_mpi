@@ -37,10 +37,26 @@ describe('AdminController', () => {
     expect(test).toEqual(GetProfileByAuthId(StringMockId))
   })
 
-  it(`should activate a superadmin (Controller)`, async () => {
-    var test = await controller.activate_superadmin_buyer('Buyer001', StringMockId)
+  it(`should activate a superadmin of buyer (Controller)`, async () => {
+    var test = await controller.activate_superadmin({ buyer_id: 'Buyer001' }, StringMockId)
     expect(test).toEqual(GetProfileByAuthId(StringMockId))
   })
+
+  it(`should activate a superadmin of vendor (Controller)`, async () => {
+    var test = await controller.activate_superadmin({ vendor_id: 'Vendor001' }, StringMockId)
+    expect(test).toEqual(GetProfileByAuthId(StringMockId))
+  })
+
+  it(`should activate a superadmin of null (Controller)`, async () => {
+    var test = await controller.activate_superadmin({}, StringMockId)
+    expect(test).toEqual(GetProfileByAuthId(StringMockId))
+  })
+
+  it(`should deactivate a superadmin (Controller)`, async () => {
+    var test = await controller.deactivate_superadmin(StringMockId)
+    expect(test).toEqual(GetProfileByAuthId(StringMockId))
+  })
+
 
   // register superuser
   it(`should not register a superuser if all password number (Controller)`, async () => {
