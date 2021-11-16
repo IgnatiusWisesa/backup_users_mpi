@@ -41,7 +41,7 @@ export class AdminController {
 
             if( userPayload.flag !== "" ) return this.adminUserService.registerCreate(userPayload)
         }
-        throw new UnauthorizedException()
+        throw new UnauthorizedException(registeredUser)
     }
 
     @ApiCreatedResponse({ type: AdminUser, description: 'register an admin superuser' })
@@ -63,7 +63,7 @@ export class AdminController {
 
             if( userPayload.flag !== "" ) return this.adminUserService.registerCreate(userPayload)
         }
-        throw new UnauthorizedException()
+        throw new UnauthorizedException(registeredUser)
     }
 
     @ApiOkResponse({ description: 'logined a user' })
